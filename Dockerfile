@@ -11,6 +11,7 @@ git \
 ipython \
 jdk8-openjdk \
 jupyter \
+mathjax \
 openssl \
 perl \
 python-pip \
@@ -72,7 +73,6 @@ ENV TINI_VERSION v0.6.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
-# CMD [ "/bin/bash" ]
 # EXPOSE 8888
 
 # Install Drill
@@ -82,6 +82,7 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 # RUN mkdir -p /opt/drill
 # RUN tar -xvzf apache-drill-1.11.0.tar.gz -C /opt/drill
 
+RUN jupyter nbextension install --py datalab.notebook
 
 WORKDIR /local
 
