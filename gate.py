@@ -22,7 +22,7 @@ class MyApp(cli.Application):
 
     @cli.switch("--build")
     def build(self):
-        """Build the jupyter docker image"""
+        """Build the docker image"""
         action = Action(self.build_image)
         self._action_list.insert(0, action)
 
