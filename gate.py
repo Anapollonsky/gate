@@ -5,7 +5,7 @@ from plumbum import cli
 import os
 import sys
 
-image = "gate"
+DOCKER_IMAGE_NAME = "gate"
 
 class Action(object):
     def __init__(self, func, *args):
@@ -42,26 +42,26 @@ class MyApp(cli.Application):
 
     def build_image(self):
         self._check_docker_daemon()
-        (docker["build", "-t", "test_image", "."]) & FG
+        (docker["build", "-t", DOCKER_IMAGE_NAME, "."]) & FG
 
     def run_image(self, place):
         self._check_docker_daemon()
         home_folder = os.getenv("HOME")
+        docker_image_full_name = DOCKER_IMAGE_NAME + ":latest"
 
         try:
-            print(f"Starting container with image {image}")
+            print(f"Starting container with image {docker_image_full_name}")
             (docker["run",
                     "-v", "/:/local",  # map the entire host machine to /local
                     "-v", "/var/run/docker.sock:/var/run/docker.sock",
                     "-v", f"{home_folder}/.config/gcloud:/root/.config/gcloud",  # map gcloud
-                    "--browser", "/local/usr/bin/google-chrome-stable",
                     "-w", f"/local/{place}",  # working directory
                     "--net=host",  # share network with host
-                    image,
+                    docker_image_full_name,
                     "jupyter", "notebook",
                     "--allow-root"]) & FG
         except KeyboardInterrupt:
-            print(f"Turning off container {image}")
+            print(f"Turning off container {docker_image_full_name}")
             sys.exit(1)
 
     def main(self):
